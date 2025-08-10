@@ -13,6 +13,9 @@ coverage/
 # Build outputs
 dist/
 
+# But keep deployment scripts
+!scripts/
+
 # Environment variables
 .env
 .env.local
