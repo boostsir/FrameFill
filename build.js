@@ -7,11 +7,15 @@ const fs = require('fs');
 const path = require('path');
 
 function readFile(filePath) {
+    if (!fs.existsSync(filePath)) {
+        console.error(`❌ Error: Required file not found at ${filePath}`);
+        process.exit(1);
+    }
     try {
         return fs.readFileSync(filePath, 'utf8');
     } catch (error) {
-        console.error(`Error reading file ${filePath}:`, error.message);
-        return '';
+        console.error(`❌ Error reading file ${filePath}:`, error.message);
+        process.exit(1);
     }
 }
 
@@ -22,7 +26,11 @@ function buildSingleHTML() {
     const htmlTemplate = readFile(path.join(__dirname, 'src/index.html'));
     
     // Read CSS files (if any)
-    const customCSS = readFile(path.join(__dirname, 'src/css/style.css'));
+    const cssPath = path.join(__dirname, 'src/css/style.css');
+    let customCSS = '';
+    if (fs.existsSync(cssPath)) {
+        customCSS = readFile(cssPath);
+    }
     
     // Read all JavaScript modules in order
     const imageProcessor = readFile(path.join(__dirname, 'src/js/imageProcessor.js'));
