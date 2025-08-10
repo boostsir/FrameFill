@@ -43,7 +43,6 @@ npm run serve
 
 This project follows strict **Test-Driven Development (TDD)**:
 - 43 comprehensive tests
-- 90%+ code coverage
 - Red → Green → Refactor cycle
 
 ```bash
@@ -160,8 +159,7 @@ npm run deploy         # Deploy to GitHub Pages
 1. **Fork the repository**
 2. **Follow TDD**: Write tests first!
 3. **Keep it simple**: This is an MVP
-4. **Test everything**: Maintain 80%+ coverage
-5. **Submit PR**: Include test results
+4. **Submit PR**: Include test results
 
 ## 📄 License
 

@@ -189,7 +189,6 @@ Based on MVP_SPEC.md, implement only these essential features:
 - **TDD 是強制性的** - 使用 Jest，不是 console
 - **測試先行** - 紅燈 → 綠燈 → 重構
 - **保持簡單** - MVP 就是最小可行產品
-- **測試覆蓋** - 必須達到 80% 以上
 - **模組化開發** - 開發時分離，構建時合併
 
 記住：你正在使用專業的 TDD 流程與 Jest 測試框架。每個功能都從測試開始，確保代碼品質和可維護性。最終交付的單一 HTML 文件是經過完整測試的高品質產品。
