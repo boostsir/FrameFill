@@ -1,0 +1,33 @@
+{
+  "name": "image-background-tool",
+  "version": "1.0.0",
+  "description": "MVP Image Background Tool - Add backgrounds to images",
+  "main": "dist/index.html",
+  "scripts": {
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
+    "build": "node build.js",
+    "serve": "python3 -m http.server 8000"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",
+    "jest-environment-jsdom": "^29.0.0"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": ["<rootDir>/tests/setup.js"],
+    "collectCoverageFrom": [
+      "src/js/**/*.js",
+      "!src/js/main.js"
+    ],
+    "coverageThreshold": {
+      "global": {
+        "branches": 80,
+        "functions": 80,
+        "lines": 80,
+        "statements": 80
+      }
+    }
+  }
+}

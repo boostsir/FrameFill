@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Background Tool</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/css/uikit.min.css" />
+    <style>
+        .preview-container {
+            min-height: 300px;
+            border: 2px dashed #e5e5e5;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+        
+        #preview-canvas {
+            max-width: 100%;
+            max-height: 400px;
+            border: 1px solid #ddd;
+        }
+        
+        .control-section {
+            margin-bottom: 20px;
+        }
+        
+        .scale-display {
+            margin-left: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="uk-container uk-container-small uk-margin-top">
+        <h1 class="uk-heading-medium uk-text-center">Image Background Tool</h1>
+        
+        <!-- Preview Canvas -->
+        <div class="preview-container uk-card uk-card-default uk-card-body">
+            <canvas id="preview-canvas" width="800" height="600"></canvas>
+        </div>
+        
+        <!-- Image Upload -->
+        <div class="control-section uk-card uk-card-default uk-card-body">
+            <h3 class="uk-card-title">Upload Image</h3>
+            <div class="uk-margin">
+                <input class="uk-input" type="file" id="image-upload" accept="image/*">
+            </div>
+        </div>
+        
+        <!-- Output Size Controls -->
+        <div class="control-section uk-card uk-card-default uk-card-body">
+            <h3 class="uk-card-title">Output Size</h3>
+            <div class="uk-grid-small" uk-grid>
+                <div class="uk-width-1-2">
+                    <label class="uk-form-label" for="width-input">Width (px)</label>
+                    <input class="uk-input" type="number" id="width-input" value="800" min="100" max="2000">
+                </div>
+                <div class="uk-width-1-2">
+                    <label class="uk-form-label" for="height-input">Height (px)</label>
+                    <input class="uk-input" type="number" id="height-input" value="600" min="100" max="2000">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scale Control -->
+        <div class="control-section uk-card uk-card-default uk-card-body">
+            <h3 class="uk-card-title">Image Scale</h3>
+            <div class="uk-margin">
+                <label class="uk-form-label">Scale: <span id="scale-display" class="scale-display">100%</span></label>
+                <input class="uk-range" type="range" id="scale-slider" min="25" max="200" step="5" value="100">
+            </div>
+        </div>
+        
+        <!-- Background Color -->
+        <div class="control-section uk-card uk-card-default uk-card-body">
+            <h3 class="uk-card-title">Background Color</h3>
+            <div class="uk-margin">
+                <label class="uk-form-label" for="bg-color">Background Color</label>
+                <input class="uk-input" type="color" id="bg-color" value="#ffffff">
+            </div>
+        </div>
+        
+        <!-- Download -->
+        <div class="control-section uk-card uk-card-default uk-card-body">
+            <button class="uk-button uk-button-primary uk-width-1-1" id="download-btn" disabled>
+                Download Image
+            </button>
+        </div>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit.min.js"></script>
+</body>
+</html>
