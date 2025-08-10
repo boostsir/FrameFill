@@ -72,6 +72,32 @@
             justify-content: center;
             background: #fafafa;
             border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+        
+        .preview-container:hover {
+            border-color: #1e87f0;
+            background: #f5f9ff;
+        }
+        
+        .preview-container.drag-over {
+            border-color: #1e87f0;
+            background: #f0f8ff;
+            transform: scale(1.02);
+        }
+        
+        .upload-prompt {
+            text-align: center;
+            color: #666;
+            font-size: 18px;
+        }
+        
+        .upload-prompt-icon {
+            font-size: 48px;
+            margin-bottom: 16px;
+            display: block;
         }
         
         #preview-canvas {
@@ -176,21 +202,24 @@
             <div class="preview-section">
                 <section aria-label="Image Preview">
                     <h2 class="uk-h3 uk-margin-medium-bottom">Preview Your Frame</h2>
-                    <div class="preview-container">
-                        <canvas id="preview-canvas" width="800" height="600" aria-label="Preview of your image with filled background in custom frame size"></canvas>
+                    <div class="preview-container" id="drop-zone">
+                        <div class="upload-prompt" id="upload-prompt">
+                            <span class="upload-prompt-icon">📁</span>
+                            <div>
+                                <strong>Click to upload</strong> or <strong>drag & drop</strong> your image here
+                                <br>
+                                <small class="uk-text-muted">JPG, PNG, GIF up to 5MB</small>
+                            </div>
+                        </div>
+                        <canvas id="preview-canvas" width="800" height="600" style="display: none;" aria-label="Preview of your image with filled background in custom frame size"></canvas>
                     </div>
+                    <!-- Hidden file input -->
+                    <input type="file" id="image-upload" accept="image/*" style="display: none;" aria-label="Upload image to fill with background">
                 </section>
             </div>
             
             <!-- Controls Section (Right Side Sticky Sidebar) -->
             <div class="controls-section">
-                <!-- Image Upload -->
-                <section class="control-card uk-card uk-card-default uk-card-body" aria-label="Image Upload">
-                    <h3 class="uk-card-title uk-margin-small-bottom">📁 Upload Your Image</h3>
-                    <p class="uk-text-small uk-text-muted uk-margin-small-bottom">Choose your photo (JPG, PNG, GIF up to 5MB)</p>
-                    <input class="uk-input" type="file" id="image-upload" accept="image/*" aria-label="Upload image to fill with background">
-                </section>
-                
                 <!-- Output Size Controls -->
                 <section class="control-card uk-card uk-card-default uk-card-body" aria-label="Frame Dimensions">
                     <h3 class="uk-card-title uk-margin-small-bottom">📏 Frame Size</h3>
@@ -249,5 +278,12 @@
     </footer>
     
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit.min.js"></script>
+    
+    <!-- Application JavaScript -->
+    <script src="js/imageProcessor.js"></script>
+    <script src="js/canvasRenderer.js"></script>
+    <script src="js/uiControls.js"></script>
+    <script src="js/downloadManager.js"></script>
+    <script src="js/app.js"></script>
 </body>
 </html>
