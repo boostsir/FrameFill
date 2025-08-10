@@ -374,4 +374,62 @@ describe('Download Functionality', () => {
         expect(mockContext.lineWidth).toBe(15);
         expect(mockContext.strokeRect).toHaveBeenCalled();
     });
+
+    test('should have both download buttons in HTML', () => {
+        const mainDownloadBtn = document.getElementById('download-btn');
+        const previewDownloadBtn = document.getElementById('preview-download-btn');
+        const previewDownloadSection = document.getElementById('preview-download-section');
+        
+        expect(mainDownloadBtn).toBeTruthy();
+        expect(previewDownloadBtn).toBeTruthy();
+        expect(previewDownloadSection).toBeTruthy();
+        
+        // Both download buttons should be visible but disabled initially
+        expect(previewDownloadSection.style.display).not.toBe('none');
+        expect(previewDownloadBtn.disabled).toBe(true);
+        expect(mainDownloadBtn.disabled).toBe(true);
+    });
+
+    test('should enable preview download button', () => {
+        const { enablePreviewDownloadButton } = require('../src/js/downloadManager');
+        
+        const previewDownloadBtn = document.getElementById('preview-download-btn');
+        
+        // Initially disabled
+        expect(previewDownloadBtn.disabled).toBe(true);
+        
+        enablePreviewDownloadButton();
+        
+        // Should be enabled now
+        expect(previewDownloadBtn.disabled).toBe(false);
+    });
+
+    test('should disable preview download button', () => {
+        const { disablePreviewDownloadButton } = require('../src/js/downloadManager');
+        
+        const previewDownloadBtn = document.getElementById('preview-download-btn');
+        
+        // First enable it
+        previewDownloadBtn.disabled = false;
+        
+        disablePreviewDownloadButton();
+        
+        // Should be disabled now
+        expect(previewDownloadBtn.disabled).toBe(true);
+    });
+
+    test('should bind both download buttons to click event', () => {
+        const { bindDownloadEvent } = require('../src/js/downloadManager');
+        
+        const mainDownloadBtn = document.getElementById('download-btn');
+        const previewDownloadBtn = document.getElementById('preview-download-btn');
+        
+        mainDownloadBtn.addEventListener = jest.fn();
+        previewDownloadBtn.addEventListener = jest.fn();
+        
+        bindDownloadEvent();
+        
+        expect(mainDownloadBtn.addEventListener).toHaveBeenCalledWith('click', expect.any(Function));
+        expect(previewDownloadBtn.addEventListener).toHaveBeenCalledWith('click', expect.any(Function));
+    });
 });

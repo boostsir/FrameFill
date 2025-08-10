@@ -61,10 +61,15 @@ async function handleImageUpload(event) {
             imageElement.onload = () => {
                 uploadedImage = dataUrl;
                 
-                // Enable download button
+                // Enable download buttons
                 const downloadBtn = document.getElementById('download-btn');
                 if (downloadBtn) {
                     downloadBtn.disabled = false;
+                }
+                
+                // Enable preview download button
+                if (typeof window.enablePreviewDownloadButton === 'function') {
+                    window.enablePreviewDownloadButton();
                 }
                 
                 // Trigger preview update if function exists

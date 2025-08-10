@@ -83,6 +83,26 @@ describe('Image Upload Functionality', () => {
         expect(downloadBtn.disabled).toBe(false);
     });
 
+    test('should enable preview download button after image upload', async () => {
+        const { handleImageUpload } = require('../src/js/imageProcessor');
+        
+        const mockFile = new File(['fake-image-data'], 'test.jpg', { type: 'image/jpeg' });
+        const mockEvent = { target: { files: [mockFile] } };
+        
+        // Mock the enablePreviewDownloadButton function
+        window.enablePreviewDownloadButton = jest.fn();
+        
+        const previewDownloadBtn = document.getElementById('preview-download-btn');
+        
+        // Initially disabled
+        expect(previewDownloadBtn.disabled).toBe(true);
+        
+        await handleImageUpload(mockEvent);
+        
+        // Should call enablePreviewDownloadButton
+        expect(window.enablePreviewDownloadButton).toHaveBeenCalled();
+    });
+
     test('should show error alert for invalid file', async () => {
         // This test will fail initially (RED phase)
         const { handleImageUpload } = require('../src/js/imageProcessor');

@@ -172,12 +172,40 @@ async function handleDownloadClick() {
 }
 
 /**
- * Binds download button event
+ * Enables the preview download button
+ */
+function enablePreviewDownloadButton() {
+    const previewDownloadBtn = document.getElementById('preview-download-btn');
+    
+    if (previewDownloadBtn) {
+        previewDownloadBtn.disabled = false;
+    }
+}
+
+/**
+ * Disables the preview download button
+ */
+function disablePreviewDownloadButton() {
+    const previewDownloadBtn = document.getElementById('preview-download-btn');
+    
+    if (previewDownloadBtn) {
+        previewDownloadBtn.disabled = true;
+    }
+}
+
+/**
+ * Binds download button events to both download buttons
  */
 function bindDownloadEvent() {
     const downloadBtn = document.getElementById('download-btn');
+    const previewDownloadBtn = document.getElementById('preview-download-btn');
+    
     if (downloadBtn) {
         downloadBtn.addEventListener('click', handleDownloadClick);
+    }
+    
+    if (previewDownloadBtn) {
+        previewDownloadBtn.addEventListener('click', handleDownloadClick);
     }
 }
 
@@ -197,6 +225,8 @@ if (typeof module !== 'undefined' && module.exports) {
         canvasToBlob,
         triggerDownload,
         handleDownloadClick,
+        enablePreviewDownloadButton,
+        disablePreviewDownloadButton,
         bindDownloadEvent,
         initializeDownload
     };
@@ -210,6 +240,8 @@ if (typeof window !== 'undefined') {
     window.canvasToBlob = canvasToBlob;
     window.triggerDownload = triggerDownload;
     window.handleDownloadClick = handleDownloadClick;
+    window.enablePreviewDownloadButton = enablePreviewDownloadButton;
+    window.disablePreviewDownloadButton = disablePreviewDownloadButton;
     window.bindDownloadEvent = bindDownloadEvent;
     window.initializeDownload = initializeDownload;
 }
