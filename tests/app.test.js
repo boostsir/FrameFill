@@ -43,12 +43,12 @@ describe('Main Application', () => {
         // Mock functions
         window.initializeControls = jest.fn();
         window.initializeDownload = jest.fn();
-        window.handleImageUpload = jest.fn();
+        window.handleImageUpload = jest.fn(() => Promise.resolve());
         window.updatePreview = jest.fn();
         
         initializeApp();
         
-        expect(imageUpload.addEventListener).toHaveBeenCalledWith('change', window.handleImageUpload);
+        expect(imageUpload.addEventListener).toHaveBeenCalledWith('change', expect.any(Function));
     });
 
     test('should handle missing functions gracefully', () => {

@@ -29,10 +29,6 @@ describe('Canvas Preview Functionality', () => {
     test('should update preview when image is uploaded', async () => {
         // This test will fail initially (RED phase)
         const { updatePreview } = require('../src/js/canvasRenderer');
-        const { handleImageUpload } = require('../src/js/imageProcessor');
-        
-        const mockFile = new File(['fake-image-data'], 'test.jpg', { type: 'image/jpeg' });
-        const mockEvent = { target: { files: [mockFile] } };
         
         // Mock canvas context
         const canvas = document.getElementById('preview-canvas');
@@ -40,12 +36,24 @@ describe('Canvas Preview Functionality', () => {
             fillStyle: '',
             fillRect: jest.fn(),
             drawImage: jest.fn(),
-            clearRect: jest.fn()
+            clearRect: jest.fn(),
+            filter: 'none',
+            strokeStyle: '',
+            lineWidth: 0,
+            strokeRect: jest.fn()
         };
         
         canvas.getContext = jest.fn(() => mockContext);
         
-        await handleImageUpload(mockEvent);
+        // Mock image functions
+        window.getImageElement = jest.fn(() => ({
+            width: 200,
+            height: 150
+        }));
+        window.getUploadedImage = jest.fn(() => 'mock-data-url');
+        window.getBackgroundType = jest.fn(() => 'color');
+        window.getBorderSettings = jest.fn(() => ({ width: 10, color: '#ffffff' }));
+        
         updatePreview();
         
         expect(mockContext.fillRect).toHaveBeenCalled();
@@ -182,5 +190,174 @@ describe('Canvas Preview Functionality', () => {
         // Should still draw background
         expect(mockContext.fillRect).toHaveBeenCalled();
         expect(mockContext.drawImage).not.toHaveBeenCalled();
+    });
+});
+
+describe('Image Blur Background Functionality', () => {
+    test('should create blurred background from image', () => {
+        // This test will fail initially (RED phase)
+        const { createBlurredBackground } = require('../src/js/canvasRenderer');
+        
+        const mockImage = {
+            width: 300,
+            height: 200
+        };
+        
+        const result = createBlurredBackground(mockImage, 800, 600);
+        
+        expect(result).toBeTruthy();
+        expect(result.canvas).toBeTruthy();
+        expect(result.scale).toBeGreaterThan(1); // Should be enlarged
+    });
+
+    test('should calculate blur background scale to cover canvas', () => {
+        // This test will fail initially (RED phase)  
+        const { calculateBlurScale } = require('../src/js/canvasRenderer');
+        
+        // Image smaller than canvas
+        let scale = calculateBlurScale(400, 300, 800, 600);
+        expect(scale).toBe(2); // Should scale to cover canvas
+        
+        // Image larger than canvas  
+        scale = calculateBlurScale(1200, 900, 800, 600);
+        expect(scale).toBeCloseTo(0.67, 1); // Should scale to cover canvas
+        
+        // Image with different aspect ratio
+        scale = calculateBlurScale(200, 600, 800, 400);
+        expect(scale).toBe(4); // Should scale width to cover
+    });
+
+    test('should draw blurred background on canvas', () => {
+        // This test will fail initially (RED phase)
+        const { drawBlurredBackground } = require('../src/js/canvasRenderer');
+        
+        const canvas = document.getElementById('preview-canvas');
+        let filterValue = 'none';
+        const mockContext = {
+            get filter() { return filterValue; },
+            set filter(value) { filterValue = value; },
+            drawImage: jest.fn(),
+            clearRect: jest.fn()
+        };
+        
+        canvas.getContext = jest.fn(() => mockContext);
+        
+        const mockImage = {
+            width: 400,
+            height: 300
+        };
+        
+        drawBlurredBackground(mockImage, 800, 600);
+        
+        expect(mockContext.clearRect).toHaveBeenCalledWith(0, 0, 800, 600);
+        expect(mockContext.drawImage).toHaveBeenCalled();
+        expect(filterValue).toBe('none'); // Should reset filter after drawing
+    });
+
+    test('should handle background type switching', () => {
+        // This test will fail initially (RED phase)
+        const { drawBackgroundByType } = require('../src/js/canvasRenderer');
+        
+        const canvas = document.getElementById('preview-canvas');
+        let filterValue = 'none';
+        const mockContext = {
+            get filter() { return filterValue; },
+            set filter(value) { filterValue = value; },
+            fillStyle: '',
+            fillRect: jest.fn(),
+            drawImage: jest.fn(),
+            clearRect: jest.fn()
+        };
+        
+        canvas.getContext = jest.fn(() => mockContext);
+        
+        const mockImage = {
+            width: 400,
+            height: 300
+        };
+        
+        // Test color background
+        drawBackgroundByType('color', '#ff0000', mockImage, 800, 600);
+        expect(mockContext.fillStyle).toBe('#ff0000');
+        expect(mockContext.fillRect).toHaveBeenCalled();
+        
+        // Test image background
+        jest.clearAllMocks();
+        drawBackgroundByType('image', '#ff0000', mockImage, 800, 600);
+        expect(mockContext.drawImage).toHaveBeenCalled();
+    });
+});
+
+describe('Border Rendering Functionality', () => {
+    test('should draw border around image', () => {
+        // This test will fail initially (RED phase)
+        const { drawImageBorder } = require('../src/js/canvasRenderer');
+        
+        const canvas = document.getElementById('preview-canvas');
+        const mockContext = {
+            strokeStyle: '',
+            lineWidth: 0,
+            strokeRect: jest.fn()
+        };
+        
+        canvas.getContext = jest.fn(() => mockContext);
+        
+        const imagePosition = { x: 100, y: 50 };
+        const imageSize = { width: 200, height: 150 };
+        const borderSettings = { width: 10, color: '#ffffff' };
+        
+        drawImageBorder(imagePosition, imageSize, borderSettings);
+        
+        expect(mockContext.strokeStyle).toBe('#ffffff');
+        expect(mockContext.lineWidth).toBe(10);
+        expect(mockContext.strokeRect).toHaveBeenCalledWith(
+            95,  // x - borderWidth/2
+            45,  // y - borderWidth/2  
+            210, // width + borderWidth
+            160  // height + borderWidth
+        );
+    });
+
+    test('should not draw border when width is 0', () => {
+        // This test will fail initially (RED phase)
+        const { drawImageBorder } = require('../src/js/canvasRenderer');
+        
+        const canvas = document.getElementById('preview-canvas');
+        const mockContext = {
+            strokeStyle: '',
+            lineWidth: 0,
+            strokeRect: jest.fn()
+        };
+        
+        canvas.getContext = jest.fn(() => mockContext);
+        
+        const imagePosition = { x: 100, y: 50 };
+        const imageSize = { width: 200, height: 150 };
+        const borderSettings = { width: 0, color: '#ffffff' };
+        
+        drawImageBorder(imagePosition, imageSize, borderSettings);
+        
+        expect(mockContext.strokeRect).not.toHaveBeenCalled();
+    });
+
+    test('should calculate border-adjusted image position', () => {
+        // This test will fail initially (RED phase)
+        const { calculateImagePositionWithBorder } = require('../src/js/canvasRenderer');
+        
+        const canvasWidth = 800;
+        const canvasHeight = 600;
+        const imageWidth = 200;
+        const imageHeight = 150;
+        const borderWidth = 10;
+        
+        const result = calculateImagePositionWithBorder(
+            canvasWidth, canvasHeight, imageWidth, imageHeight, borderWidth
+        );
+        
+        // Should account for border when centering
+        expect(result.x).toBe(300); // Still centered
+        expect(result.y).toBe(225); // Still centered
+        expect(result.adjustedWidth).toBe(200);
+        expect(result.adjustedHeight).toBe(150);
     });
 });

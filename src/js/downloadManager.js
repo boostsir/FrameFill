@@ -36,11 +36,35 @@ async function renderToDownloadCanvas(canvas, image, settings) {
     // Clear canvas
     ctx.clearRect(0, 0, settings.width, settings.height);
     
-    // Draw background
-    ctx.fillStyle = settings.backgroundColor;
-    ctx.fillRect(0, 0, settings.width, settings.height);
+    // Draw background based on type
+    const backgroundType = settings.backgroundType || 'color';
+    if (backgroundType === 'image' && image) {
+        // Draw blurred background
+        ctx.filter = 'blur(10px)';
+        
+        // Calculate scale to cover entire canvas
+        const scaleX = settings.width / image.width;
+        const scaleY = settings.height / image.height;
+        const scale = Math.max(scaleX, scaleY);
+        const scaledWidth = image.width * scale;
+        const scaledHeight = image.height * scale;
+        
+        // Center the scaled image
+        const bgX = (settings.width - scaledWidth) / 2;
+        const bgY = (settings.height - scaledHeight) / 2;
+        
+        // Draw the blurred background
+        ctx.drawImage(image, bgX, bgY, scaledWidth, scaledHeight);
+        
+        // Reset filter
+        ctx.filter = 'none';
+    } else {
+        // Draw solid color background
+        ctx.fillStyle = settings.backgroundColor;
+        ctx.fillRect(0, 0, settings.width, settings.height);
+    }
     
-    // Calculate scaled dimensions
+    // Calculate scaled dimensions for main image
     const scaleFactor = settings.scale / 100;
     const scaledWidth = Math.round(image.width * scaleFactor);
     const scaledHeight = Math.round(image.height * scaleFactor);
@@ -49,8 +73,24 @@ async function renderToDownloadCanvas(canvas, image, settings) {
     const x = Math.round((settings.width - scaledWidth) / 2);
     const y = Math.round((settings.height - scaledHeight) / 2);
     
-    // Draw image
+    // Draw main image
     ctx.drawImage(image, x, y, scaledWidth, scaledHeight);
+    
+    // Draw border if specified
+    const border = settings.border || { width: 0, color: '#ffffff' };
+    if (border.width > 0) {
+        ctx.strokeStyle = border.color;
+        ctx.lineWidth = border.width;
+        
+        // Calculate border rectangle (centered on the image edge)
+        const borderX = x - border.width / 2;
+        const borderY = y - border.width / 2;
+        const borderWidth = scaledWidth + border.width;
+        const borderHeight = scaledHeight + border.width;
+        
+        // Draw border
+        ctx.strokeRect(borderX, borderY, borderWidth, borderHeight);
+    }
 }
 
 /**

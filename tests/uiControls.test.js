@@ -212,6 +212,140 @@ describe('Background Color Controls Functionality', () => {
     });
 });
 
+describe('Background Type Selection', () => {
+    test('should have background type radio buttons', () => {
+        // This test will fail initially (RED phase)
+        const colorRadio = document.getElementById('bg-type-color');
+        const imageRadio = document.getElementById('bg-type-image');
+        
+        expect(colorRadio).toBeTruthy();
+        expect(imageRadio).toBeTruthy();
+        expect(colorRadio.type).toBe('radio');
+        expect(imageRadio.type).toBe('radio');
+        expect(colorRadio.name).toBe('bg-type');
+        expect(imageRadio.name).toBe('bg-type');
+        expect(colorRadio.checked).toBe(true); // Default to color
+    });
+
+    test('should handle background type change', () => {
+        // This test will fail initially (RED phase)
+        const { handleBackgroundTypeChange } = require('../src/js/uiControls');
+        
+        const colorRadio = document.getElementById('bg-type-color');
+        const imageRadio = document.getElementById('bg-type-image');
+        
+        window.updatePreview = jest.fn();
+        
+        // Switch to image background
+        imageRadio.checked = true;
+        const event = { target: imageRadio };
+        
+        handleBackgroundTypeChange(event);
+        
+        expect(window.updatePreview).toHaveBeenCalled();
+    });
+
+    test('should get current background type', () => {
+        // This test will fail initially (RED phase)
+        const { getBackgroundType } = require('../src/js/uiControls');
+        
+        const colorRadio = document.getElementById('bg-type-color');
+        const imageRadio = document.getElementById('bg-type-image');
+        
+        colorRadio.checked = true;
+        expect(getBackgroundType()).toBe('color');
+        
+        colorRadio.checked = false;
+        imageRadio.checked = true;
+        expect(getBackgroundType()).toBe('image');
+    });
+
+    test('should show/hide color picker based on background type', () => {
+        // This test will fail initially (RED phase)
+        const { toggleBackgroundControls } = require('../src/js/uiControls');
+        
+        const colorControls = document.getElementById('bg-color-controls');
+        
+        toggleBackgroundControls('color');
+        expect(colorControls.style.display).not.toBe('none');
+        
+        toggleBackgroundControls('image');
+        expect(colorControls.style.display).toBe('none');
+    });
+});
+
+describe('Border Controls Functionality', () => {
+    test('should have border width and color inputs', () => {
+        // This test will fail initially (RED phase)
+        const borderWidthInput = document.getElementById('border-width');
+        const borderColorInput = document.getElementById('border-color');
+        
+        expect(borderWidthInput).toBeTruthy();
+        expect(borderColorInput).toBeTruthy();
+        expect(borderWidthInput.type).toBe('number');
+        expect(borderColorInput.type).toBe('color');
+        expect(borderWidthInput.value).toBe('10'); // Default width
+        expect(borderColorInput.value).toBe('#ffffff'); // Default color
+    });
+
+    test('should validate border width input', () => {
+        // This test will fail initially (RED phase)
+        const { validateBorderWidth } = require('../src/js/uiControls');
+        
+        expect(validateBorderWidth(0)).toBe(true);   // No border
+        expect(validateBorderWidth(10)).toBe(true);  // Valid
+        expect(validateBorderWidth(50)).toBe(true);  // Valid max
+        expect(validateBorderWidth(-1)).toBe(false); // Negative
+        expect(validateBorderWidth(51)).toBe(false); // Too large
+        expect(validateBorderWidth(5.5)).toBe(false); // Decimal
+    });
+
+    test('should handle border width change', () => {
+        // This test will fail initially (RED phase)
+        const { handleBorderWidthChange } = require('../src/js/uiControls');
+        
+        const borderWidthInput = document.getElementById('border-width');
+        window.updatePreview = jest.fn();
+        
+        borderWidthInput.value = '20';
+        const event = { target: borderWidthInput };
+        
+        handleBorderWidthChange(event);
+        
+        expect(window.updatePreview).toHaveBeenCalled();
+    });
+
+    test('should handle border color change', () => {
+        // This test will fail initially (RED phase)
+        const { handleBorderColorChange } = require('../src/js/uiControls');
+        
+        const borderColorInput = document.getElementById('border-color');
+        window.updatePreview = jest.fn();
+        
+        borderColorInput.value = '#ff0000';
+        const event = { target: borderColorInput };
+        
+        handleBorderColorChange(event);
+        
+        expect(window.updatePreview).toHaveBeenCalled();
+    });
+
+    test('should get border settings', () => {
+        // This test will fail initially (RED phase)
+        const { getBorderSettings } = require('../src/js/uiControls');
+        
+        const borderWidthInput = document.getElementById('border-width');
+        const borderColorInput = document.getElementById('border-color');
+        
+        borderWidthInput.value = '15';
+        borderColorInput.value = '#0000ff';
+        
+        const settings = getBorderSettings();
+        expect(settings.width).toBe(15);
+        expect(settings.color).toBe('#0000ff');
+    });
+});
+
 describe('Event Binding', () => {
     test('should bind all control events', () => {
         // This test will fail initially (RED phase)

@@ -246,13 +246,51 @@
                     </div>
                 </section>
                 
-                <!-- Background Color -->
-                <section class="control-card uk-card uk-card-default uk-card-body" aria-label="Fill Settings">
+                <!-- Background Settings -->
+                <section class="control-card uk-card uk-card-default uk-card-body" aria-label="Background Settings">
                     <h3 class="uk-card-title uk-margin-small-bottom">🎨 Fill Background</h3>
-                    <p class="uk-text-small uk-text-muted uk-margin-small-bottom">Choose background color</p>
-                    <div class="uk-margin-small-top">
+                    <p class="uk-text-small uk-text-muted uk-margin-small-bottom">Choose background type</p>
+                    
+                    <!-- Background Type Selection -->
+                    <div class="uk-margin-small-top uk-margin-small-bottom">
+                        <label class="uk-form-label uk-text-small">Background Type</label>
+                        <div class="uk-grid-small uk-margin-small-top" uk-grid>
+                            <div class="uk-width-1-2">
+                                <label class="uk-flex uk-flex-middle">
+                                    <input class="uk-radio uk-margin-small-right" type="radio" id="bg-type-color" name="bg-type" value="color" checked>
+                                    <span class="uk-text-small">Color</span>
+                                </label>
+                            </div>
+                            <div class="uk-width-1-2">
+                                <label class="uk-flex uk-flex-middle">
+                                    <input class="uk-radio uk-margin-small-right" type="radio" id="bg-type-image" name="bg-type" value="image">
+                                    <span class="uk-text-small">Image Blur</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Background Color Controls -->
+                    <div id="bg-color-controls" class="uk-margin-small-top">
                         <label class="uk-form-label uk-text-small" for="bg-color">Fill Color</label>
                         <input class="uk-input" type="color" id="bg-color" value="#ffffff" aria-label="Choose fill color for frame background">
+                    </div>
+                </section>
+
+                <!-- Border Settings -->
+                <section class="control-card uk-card uk-card-default uk-card-body" aria-label="Border Settings">
+                    <h3 class="uk-card-title uk-margin-small-bottom">🖼️ Image Border</h3>
+                    <p class="uk-text-small uk-text-muted uk-margin-small-bottom">Add border around your image</p>
+                    
+                    <div class="uk-grid-small uk-margin-small-top" uk-grid>
+                        <div class="uk-width-1-2">
+                            <label class="uk-form-label uk-text-small" for="border-width">Width (px)</label>
+                            <input class="uk-input uk-form-small" type="number" id="border-width" value="10" min="0" max="50" aria-label="Border width in pixels">
+                        </div>
+                        <div class="uk-width-1-2">
+                            <label class="uk-form-label uk-text-small" for="border-color">Color</label>
+                            <input class="uk-input" type="color" id="border-color" value="#ffffff" aria-label="Border color">
+                        </div>
                     </div>
                 </section>
             </div>

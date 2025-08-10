@@ -7,6 +7,8 @@ const MIN_SIZE = 100;
 const MAX_SIZE = 2000;
 const MIN_SCALE = 25;
 const MAX_SCALE = 200;
+const MIN_BORDER_WIDTH = 0;
+const MAX_BORDER_WIDTH = 50;
 
 /**
  * Validates size input (width/height)
@@ -131,6 +133,127 @@ function handleColorChange(event) {
 }
 
 /**
+ * Validates border width input
+ * @param {number} value - Border width value to validate
+ * @returns {boolean} - True if valid, false otherwise
+ */
+function validateBorderWidth(value) {
+    if (isNaN(value) || value !== Math.floor(value)) {
+        return false; // Not an integer
+    }
+    
+    return value >= MIN_BORDER_WIDTH && value <= MAX_BORDER_WIDTH;
+}
+
+/**
+ * Gets current background type from radio buttons
+ * @returns {string} - 'color' or 'image'
+ */
+function getBackgroundType() {
+    const colorRadio = document.getElementById('bg-type-color');
+    const imageRadio = document.getElementById('bg-type-image');
+    
+    if (colorRadio && colorRadio.checked) {
+        return 'color';
+    } else if (imageRadio && imageRadio.checked) {
+        return 'image';
+    }
+    
+    return 'color'; // Default fallback
+}
+
+/**
+ * Toggles visibility of background controls based on type
+ * @param {string} type - Background type ('color' or 'image')
+ */
+function toggleBackgroundControls(type) {
+    const colorControls = document.getElementById('bg-color-controls');
+    
+    if (colorControls) {
+        if (type === 'color') {
+            colorControls.style.display = '';
+        } else {
+            colorControls.style.display = 'none';
+        }
+    }
+}
+
+/**
+ * Handles background type change (radio button selection)
+ * @param {Event} event - Input change event
+ */
+function handleBackgroundTypeChange(event) {
+    const selectedType = event.target.value;
+    
+    // Toggle controls visibility
+    toggleBackgroundControls(selectedType);
+    
+    // Update preview if function exists
+    if (typeof window.updatePreview === 'function') {
+        window.updatePreview();
+    }
+}
+
+/**
+ * Gets current border settings
+ * @returns {Object} Object with width and color properties
+ */
+function getBorderSettings() {
+    const borderWidthInput = document.getElementById('border-width');
+    const borderColorInput = document.getElementById('border-color');
+    
+    return {
+        width: parseInt(borderWidthInput ? borderWidthInput.value : 10),
+        color: borderColorInput ? borderColorInput.value : '#ffffff'
+    };
+}
+
+/**
+ * Handles border width changes
+ * @param {Event} event - Input change event
+ */
+function handleBorderWidthChange(event) {
+    const value = parseInt(event.target.value);
+    
+    // Only update preview if we have a valid number in the acceptable range
+    if (!isNaN(value) && validateBorderWidth(value)) {
+        // Update preview if function exists
+        if (typeof window.updatePreview === 'function') {
+            window.updatePreview();
+        }
+    }
+}
+
+/**
+ * Handles border width validation when user finishes editing (blur event)
+ * @param {Event} event - Input blur event
+ */
+function handleBorderWidthBlur(event) {
+    const value = parseInt(event.target.value);
+    
+    if (!validateBorderWidth(value)) {
+        alert('Border width must be between 0-50px and must be an integer.');
+        event.target.value = '10'; // Reset to default
+        
+        // Update preview after reset
+        if (typeof window.updatePreview === 'function') {
+            window.updatePreview();
+        }
+    }
+}
+
+/**
+ * Handles border color changes
+ * @param {Event} event - Input change event
+ */
+function handleBorderColorChange(event) {
+    // Update preview if function exists
+    if (typeof window.updatePreview === 'function') {
+        window.updatePreview();
+    }
+}
+
+/**
  * Binds all control events to their respective elements
  */
 function bindControlEvents() {
@@ -138,6 +261,10 @@ function bindControlEvents() {
     const heightInput = document.getElementById('height-input');
     const scaleSlider = document.getElementById('scale-slider');
     const bgColorInput = document.getElementById('bg-color');
+    const bgTypeColorRadio = document.getElementById('bg-type-color');
+    const bgTypeImageRadio = document.getElementById('bg-type-image');
+    const borderWidthInput = document.getElementById('border-width');
+    const borderColorInput = document.getElementById('border-color');
     
     if (widthInput) {
         widthInput.addEventListener('input', handleSizeChange);  // Real-time preview
@@ -158,6 +285,23 @@ function bindControlEvents() {
     if (bgColorInput) {
         bgColorInput.addEventListener('input', handleColorChange);
     }
+    
+    if (bgTypeColorRadio) {
+        bgTypeColorRadio.addEventListener('change', handleBackgroundTypeChange);
+    }
+    
+    if (bgTypeImageRadio) {
+        bgTypeImageRadio.addEventListener('change', handleBackgroundTypeChange);
+    }
+    
+    if (borderWidthInput) {
+        borderWidthInput.addEventListener('input', handleBorderWidthChange);
+        borderWidthInput.addEventListener('blur', handleBorderWidthBlur);
+    }
+    
+    if (borderColorInput) {
+        borderColorInput.addEventListener('input', handleBorderColorChange);
+    }
 }
 
 /**
@@ -171,6 +315,10 @@ function initializeControls() {
     if (scaleSlider) {
         updateScaleDisplay(parseInt(scaleSlider.value));
     }
+    
+    // Initialize background controls visibility
+    const initialType = getBackgroundType();
+    toggleBackgroundControls(initialType);
 }
 
 // Export functions for testing and use
@@ -178,11 +326,18 @@ if (typeof module !== 'undefined' && module.exports) {
     module.exports = {
         validateSizeInput,
         validateColorInput,
+        validateBorderWidth,
         handleSizeChange,
         handleSizeBlur,
         handleScaleChange,
         updateScaleDisplay,
         handleColorChange,
+        getBackgroundType,
+        toggleBackgroundControls,
+        handleBackgroundTypeChange,
+        getBorderSettings,
+        handleBorderWidthChange,
+        handleBorderColorChange,
         bindControlEvents,
         initializeControls
     };
@@ -192,11 +347,18 @@ if (typeof module !== 'undefined' && module.exports) {
 if (typeof window !== 'undefined') {
     window.validateSizeInput = validateSizeInput;
     window.validateColorInput = validateColorInput;
+    window.validateBorderWidth = validateBorderWidth;
     window.handleSizeChange = handleSizeChange;
     window.handleSizeBlur = handleSizeBlur;
     window.handleScaleChange = handleScaleChange;
     window.updateScaleDisplay = updateScaleDisplay;
     window.handleColorChange = handleColorChange;
+    window.getBackgroundType = getBackgroundType;
+    window.toggleBackgroundControls = toggleBackgroundControls;
+    window.handleBackgroundTypeChange = handleBackgroundTypeChange;
+    window.getBorderSettings = getBorderSettings;
+    window.handleBorderWidthChange = handleBorderWidthChange;
+    window.handleBorderColorChange = handleBorderColorChange;
     window.bindControlEvents = bindControlEvents;
     window.initializeControls = initializeControls;
 }

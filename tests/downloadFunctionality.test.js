@@ -247,4 +247,131 @@ describe('Download Functionality', () => {
         
         await expect(canvasToBlob(canvas)).rejects.toThrow('Failed to convert canvas to blob');
     });
+
+    test('should render blur background when backgroundType is image', async () => {
+        // This test will fail initially (RED phase) - BUG REPRODUCTION
+        const { renderToDownloadCanvas } = require('../src/js/downloadManager');
+        
+        // Create mock image
+        const mockImage = {
+            width: 200,
+            height: 150
+        };
+        
+        const settings = {
+            width: 800,
+            height: 600,
+            backgroundColor: '#ffffff',
+            backgroundType: 'image', // This should render blur background
+            scale: 100,
+            border: { width: 10, color: '#ffffff' }
+        };
+        
+        const canvas = document.createElement('canvas');
+        let filterValue = 'none';
+        const mockContext = {
+            get filter() { return filterValue; },
+            set filter(value) { filterValue = value; },
+            fillStyle: '',
+            fillRect: jest.fn(),
+            drawImage: jest.fn(),
+            clearRect: jest.fn(),
+            strokeStyle: '',
+            lineWidth: 0,
+            strokeRect: jest.fn()
+        };
+        canvas.getContext = jest.fn(() => mockContext);
+        
+        await renderToDownloadCanvas(canvas, mockImage, settings);
+        
+        // Currently this will fail because renderToDownloadCanvas ignores backgroundType
+        // It should call drawImage twice: once for blur background, once for main image
+        expect(mockContext.drawImage).toHaveBeenCalledTimes(2);
+        
+        // Should also draw border
+        expect(mockContext.strokeRect).toHaveBeenCalled();
+    });
+
+    test('should render color background when backgroundType is color', async () => {
+        // This test will pass as current implementation handles color backgrounds
+        const { renderToDownloadCanvas } = require('../src/js/downloadManager');
+        
+        // Create mock image
+        const mockImage = {
+            width: 200,
+            height: 150
+        };
+        
+        const settings = {
+            width: 800,
+            height: 600,
+            backgroundColor: '#ff0000',
+            backgroundType: 'color', 
+            scale: 100,
+            border: { width: 0, color: '#ffffff' } // No border
+        };
+        
+        const canvas = document.createElement('canvas');
+        const mockContext = {
+            fillStyle: '',
+            fillRect: jest.fn(),
+            drawImage: jest.fn(),
+            clearRect: jest.fn(),
+            strokeStyle: '',
+            lineWidth: 0,
+            strokeRect: jest.fn()
+        };
+        canvas.getContext = jest.fn(() => mockContext);
+        
+        await renderToDownloadCanvas(canvas, mockImage, settings);
+        
+        // Should fill background with color
+        expect(mockContext.fillStyle).toBe('#ff0000');
+        expect(mockContext.fillRect).toHaveBeenCalledWith(0, 0, 800, 600);
+        
+        // Should draw image once
+        expect(mockContext.drawImage).toHaveBeenCalledTimes(1);
+        
+        // Should not draw border
+        expect(mockContext.strokeRect).not.toHaveBeenCalled();
+    });
+
+    test('should include border in download when border width > 0', async () => {
+        // This test will fail initially (RED phase) - BUG REPRODUCTION
+        const { renderToDownloadCanvas } = require('../src/js/downloadManager');
+        
+        // Create mock image
+        const mockImage = {
+            width: 200,
+            height: 150
+        };
+        
+        const settings = {
+            width: 800,
+            height: 600,
+            backgroundColor: '#ffffff',
+            backgroundType: 'color',
+            scale: 100,
+            border: { width: 15, color: '#0000ff' }
+        };
+        
+        const canvas = document.createElement('canvas');
+        const mockContext = {
+            fillStyle: '',
+            fillRect: jest.fn(),
+            drawImage: jest.fn(),
+            clearRect: jest.fn(),
+            strokeStyle: '',
+            lineWidth: 0,
+            strokeRect: jest.fn()
+        };
+        canvas.getContext = jest.fn(() => mockContext);
+        
+        await renderToDownloadCanvas(canvas, mockImage, settings);
+        
+        // Should draw border
+        expect(mockContext.strokeStyle).toBe('#0000ff');
+        expect(mockContext.lineWidth).toBe(15);
+        expect(mockContext.strokeRect).toHaveBeenCalled();
+    });
 });
