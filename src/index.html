@@ -50,107 +50,194 @@
     <title>FrameFill - Fill Beautiful Backgrounds & Resize Images Online Free</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/css/uikit.min.css" />
     <style>
+        /* Layout Container */
+        .app-layout {
+            display: flex;
+            gap: 2rem;
+            min-height: 80vh;
+            align-items: flex-start;
+        }
+        
+        /* Preview Section (Left Side) */
+        .preview-section {
+            flex: 1;
+            min-width: 0; /* Allows flex item to shrink below content size */
+        }
+        
         .preview-container {
-            min-height: 300px;
+            min-height: 400px;
             border: 2px dashed #e5e5e5;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin-bottom: 20px;
+            background: #fafafa;
+            border-radius: 8px;
         }
         
         #preview-canvas {
             max-width: 100%;
-            max-height: 400px;
+            max-height: 70vh;
             border: 1px solid #ddd;
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         
-        .control-section {
-            margin-bottom: 20px;
+        /* Controls Section (Right Side Sticky Sidebar) */
+        .controls-section {
+            width: 320px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 2rem;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .control-card {
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .control-card:last-child {
+            margin-bottom: 0;
         }
         
         .scale-display {
             margin-left: 10px;
             font-weight: bold;
+            color: #1e87f0;
         }
         
-        /* SEO and Accessibility improvements */
-        main {
-            min-height: 80vh;
+        /* Mobile Responsive - Stack vertically on small screens */
+        @media (max-width: 959px) {
+            .app-layout {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            
+            .controls-section {
+                width: 100%;
+                position: static;
+                max-height: none;
+            }
+            
+            .preview-container {
+                min-height: 300px;
+            }
+            
+            #preview-canvas {
+                max-height: 50vh;
+            }
         }
         
-        section {
-            margin-bottom: 1.5rem;
+        /* Tablet adjustments */
+        @media (max-width: 1199px) and (min-width: 960px) {
+            .controls-section {
+                width: 280px;
+            }
+        }
+        
+        /* Header styling */
+        .app-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        /* Enhanced form styling */
+        .uk-input, .uk-range {
+            border-radius: 6px;
+        }
+        
+        .uk-button-primary {
+            border-radius: 6px;
+            transition: all 0.2s ease;
+        }
+        
+        .uk-button-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(30, 135, 240, 0.3);
+        }
+        
+        /* Download Section */
+        .download-section {
+            padding-top: 2rem;
         }
     </style>
 </head>
 <body>
-    <main class="uk-container uk-container-small uk-margin-top" role="main">
-        <header>
-            <h1 class="uk-heading-medium uk-text-center">FrameFill</h1>
-            <p class="uk-text-center uk-text-muted uk-margin-small-top">Fill beautiful backgrounds and resize your images to perfect dimensions</p>
+    <main class="uk-container uk-container-large uk-margin-top" role="main">
+        <header class="app-header">
+            <h1 class="uk-heading-medium">FrameFill</h1>
+            <p class="uk-text-muted uk-margin-small-top">Fill beautiful backgrounds and resize your images to perfect dimensions</p>
         </header>
         
-        <!-- Preview Canvas -->
-        <section aria-label="Image Preview">
-            <h2 class="uk-h3 uk-margin-medium-top">Preview Your Frame</h2>
-            <div class="preview-container uk-card uk-card-default uk-card-body">
-                <canvas id="preview-canvas" width="800" height="600" aria-label="Preview of your image with filled background in custom frame size"></canvas>
+        <div class="app-layout">
+            <!-- Preview Section (Left Side) -->
+            <div class="preview-section">
+                <section aria-label="Image Preview">
+                    <h2 class="uk-h3 uk-margin-medium-bottom">Preview Your Frame</h2>
+                    <div class="preview-container">
+                        <canvas id="preview-canvas" width="800" height="600" aria-label="Preview of your image with filled background in custom frame size"></canvas>
+                    </div>
+                </section>
             </div>
-        </section>
-        
-        <!-- Image Upload -->
-        <section class="control-section uk-card uk-card-default uk-card-body" aria-label="Image Upload">
-            <h2 class="uk-card-title">Upload Your Image</h2>
-            <p class="uk-text-small uk-text-muted uk-margin-small-top">Choose your photo to fill with a beautiful background (JPG, PNG, GIF up to 5MB)</p>
-            <div class="uk-margin">
-                <input class="uk-input" type="file" id="image-upload" accept="image/*" aria-label="Upload image to fill with background">
+            
+            <!-- Controls Section (Right Side Sticky Sidebar) -->
+            <div class="controls-section">
+                <!-- Image Upload -->
+                <section class="control-card uk-card uk-card-default uk-card-body" aria-label="Image Upload">
+                    <h3 class="uk-card-title uk-margin-small-bottom">📁 Upload Your Image</h3>
+                    <p class="uk-text-small uk-text-muted uk-margin-small-bottom">Choose your photo (JPG, PNG, GIF up to 5MB)</p>
+                    <input class="uk-input" type="file" id="image-upload" accept="image/*" aria-label="Upload image to fill with background">
+                </section>
+                
+                <!-- Output Size Controls -->
+                <section class="control-card uk-card uk-card-default uk-card-body" aria-label="Frame Dimensions">
+                    <h3 class="uk-card-title uk-margin-small-bottom">📏 Frame Size</h3>
+                    <p class="uk-text-small uk-text-muted uk-margin-small-bottom">Set frame dimensions</p>
+                    <div class="uk-grid-small uk-margin-small-top" uk-grid>
+                        <div class="uk-width-1-2">
+                            <label class="uk-form-label uk-text-small" for="width-input">Width (px)</label>
+                            <input class="uk-input uk-form-small" type="number" id="width-input" value="800" min="100" max="2000" aria-label="Frame width in pixels">
+                        </div>
+                        <div class="uk-width-1-2">
+                            <label class="uk-form-label uk-text-small" for="height-input">Height (px)</label>
+                            <input class="uk-input uk-form-small" type="number" id="height-input" value="600" min="100" max="2000" aria-label="Frame height in pixels">
+                        </div>
+                    </div>
+                </section>
+                
+                <!-- Scale Control -->
+                <section class="control-card uk-card uk-card-default uk-card-body" aria-label="Image Scaling">
+                    <h3 class="uk-card-title uk-margin-small-bottom">🔍 Scale Your Image</h3>
+                    <p class="uk-text-small uk-text-muted uk-margin-small-bottom">Adjust size (25% - 200%)</p>
+                    <div class="uk-margin-small-top">
+                        <label class="uk-form-label uk-text-small" for="scale-slider">Scale: <span id="scale-display" class="scale-display">100%</span></label>
+                        <input class="uk-range" type="range" id="scale-slider" min="25" max="200" step="5" value="100" aria-label="Scale image within frame from 25% to 200%">
+                    </div>
+                </section>
+                
+                <!-- Background Color -->
+                <section class="control-card uk-card uk-card-default uk-card-body" aria-label="Fill Settings">
+                    <h3 class="uk-card-title uk-margin-small-bottom">🎨 Fill Background</h3>
+                    <p class="uk-text-small uk-text-muted uk-margin-small-bottom">Choose background color</p>
+                    <div class="uk-margin-small-top">
+                        <label class="uk-form-label uk-text-small" for="bg-color">Fill Color</label>
+                        <input class="uk-input" type="color" id="bg-color" value="#ffffff" aria-label="Choose fill color for frame background">
+                    </div>
+                </section>
             </div>
-        </section>
+        </div>
         
-        <!-- Output Size Controls -->
-        <section class="control-section uk-card uk-card-default uk-card-body" aria-label="Frame Dimensions">
-            <h2 class="uk-card-title">Frame Size</h2>
-            <p class="uk-text-small uk-text-muted uk-margin-small-top">Set the perfect frame dimensions for your filled image</p>
-            <div class="uk-grid-small" uk-grid>
-                <div class="uk-width-1-2">
-                    <label class="uk-form-label" for="width-input">Frame Width (px)</label>
-                    <input class="uk-input" type="number" id="width-input" value="800" min="100" max="2000" aria-label="Frame width in pixels">
-                </div>
-                <div class="uk-width-1-2">
-                    <label class="uk-form-label" for="height-input">Frame Height (px)</label>
-                    <input class="uk-input" type="number" id="height-input" value="600" min="100" max="2000" aria-label="Frame height in pixels">
-                </div>
+        <!-- Download Button (Bottom Center) -->
+        <section class="download-section uk-margin-large-top" aria-label="Download Options">
+            <div class="uk-text-center">
+                <h3 class="uk-h4 uk-margin-medium-bottom">💾 Download Your FrameFilled Image</h3>
+                <p class="uk-text-muted uk-margin-small-bottom">Save your perfectly framed and filled image as PNG</p>
+                <button class="uk-button uk-button-primary uk-button-large uk-border-rounded" id="download-btn" disabled aria-label="Download FrameFilled image as PNG file">
+                    💾 Download FrameFilled Image
+                </button>
             </div>
-        </section>
-        
-        <!-- Scale Control -->
-        <section class="control-section uk-card uk-card-default uk-card-body" aria-label="Image Scaling">
-            <h2 class="uk-card-title">Scale Your Image</h2>
-            <p class="uk-text-small uk-text-muted uk-margin-small-top">Perfect size your image within the frame (25% - 200%)</p>
-            <div class="uk-margin">
-                <label class="uk-form-label" for="scale-slider">Image Scale: <span id="scale-display" class="scale-display">100%</span></label>
-                <input class="uk-range" type="range" id="scale-slider" min="25" max="200" step="5" value="100" aria-label="Scale image within frame from 25% to 200%">
-            </div>
-        </section>
-        
-        <!-- Background Color -->
-        <section class="control-section uk-card uk-card-default uk-card-body" aria-label="Fill Settings">
-            <h2 class="uk-card-title">Fill Background</h2>
-            <p class="uk-text-small uk-text-muted uk-margin-small-top">Choose a beautiful color to fill your frame background</p>
-            <div class="uk-margin">
-                <label class="uk-form-label" for="bg-color">Fill Color</label>
-                <input class="uk-input" type="color" id="bg-color" value="#ffffff" aria-label="Choose fill color for frame background">
-            </div>
-        </section>
-        
-        <!-- Download -->
-        <section class="control-section uk-card uk-card-default uk-card-body" aria-label="Download Options">
-            <h2 class="uk-card-title">Download Your FrameFilled Image</h2>
-            <p class="uk-text-small uk-text-muted uk-margin-small-top">Save your perfectly framed and filled image as PNG</p>
-            <button class="uk-button uk-button-primary uk-width-1-1" id="download-btn" disabled aria-label="Download FrameFilled image as PNG file">
-                Download FrameFilled Image
-            </button>
         </section>
     </main>
     
