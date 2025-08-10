@@ -100,7 +100,7 @@ async function handleDownloadClick() {
         const imageElement = window.getImageElement ? window.getImageElement() : null;
         
         if (!uploadedImage || !imageElement) {
-            alert('請先上傳圖片');
+            alert('Please upload an image first.');
             return;
         }
         
@@ -127,7 +127,7 @@ async function handleDownloadClick() {
         
     } catch (error) {
         console.error('Download failed:', error);
-        alert('下載失敗，請重試');
+        alert('Download failed. Please try again.');
     }
 }
 

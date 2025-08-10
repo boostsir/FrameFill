@@ -106,7 +106,7 @@ describe('Size Controls Functionality', () => {
         
         handleSizeBlur(event);
         
-        expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('尺寸必須在 100-2000px 範圍內'));
+        expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('Size must be between 100-2000px'));
         expect(widthInput.value).toBe('800'); // Reset to default
         expect(window.updatePreview).toHaveBeenCalled();
     });

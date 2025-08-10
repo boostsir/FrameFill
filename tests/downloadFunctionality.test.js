@@ -219,7 +219,7 @@ describe('Download Functionality', () => {
         
         await handleDownloadClick();
         
-        expect(window.alert).toHaveBeenCalledWith('請先上傳圖片');
+        expect(window.alert).toHaveBeenCalledWith('Please upload an image first.');
     });
 
     test('should bind download button event', () => {

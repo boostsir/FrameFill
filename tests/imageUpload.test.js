@@ -95,7 +95,7 @@ describe('Image Upload Functionality', () => {
         
         await handleImageUpload(mockEvent);
         
-        expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('請選擇有效的圖片文件'));
+        expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('Please select a valid image file'));
     });
 
     test('should show error alert for oversized file', async () => {
@@ -110,6 +110,6 @@ describe('Image Upload Functionality', () => {
         
         await handleImageUpload(mockEvent);
         
-        expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('文件大小超過 5MB 限制'));
+        expect(window.alert).toHaveBeenCalledWith(expect.stringContaining('File size exceeds 5MB limit'));
     });
 });

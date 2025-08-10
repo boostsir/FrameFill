@@ -72,7 +72,7 @@ function handleSizeBlur(event) {
     const value = parseInt(event.target.value);
     
     if (!validateSizeInput(value)) {
-        alert('尺寸必須在 100-2000px 範圍內，且必須為整數');
+        alert('Size must be between 100-2000px and must be an integer.');
         // Reset to previous valid value or default
         event.target.value = event.target.id === 'width-input' ? 800 : 600;
         
@@ -119,7 +119,7 @@ function handleColorChange(event) {
     
     // HTML color input should always provide valid colors, but validate anyway
     if (!validateColorInput(color)) {
-        alert('請選擇有效的顏色');
+        alert('Please select a valid color.');
         event.target.value = '#ffffff'; // Reset to white
         return;
     }

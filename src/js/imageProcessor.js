@@ -43,9 +43,9 @@ async function handleImageUpload(event) {
     // Validate the file
     if (!validateImageFile(file)) {
         if (!ALLOWED_TYPES.includes(file.type)) {
-            alert('請選擇有效的圖片文件 (JPG, PNG, GIF, WebP)');
+            alert('Please select a valid image file (JPG, PNG, GIF, WebP)');
         } else if (file.size > MAX_FILE_SIZE) {
-            alert('文件大小超過 5MB 限制，請選擇更小的文件');
+            alert('File size exceeds 5MB limit. Please select a smaller file.');
         }
         return;
     }
@@ -76,7 +76,7 @@ async function handleImageUpload(event) {
             };
             
             imageElement.onerror = () => {
-                alert('圖片載入失敗，請嘗試其他文件');
+                alert('Image loading failed. Please try another file.');
                 reject(new Error('Image load failed'));
             };
             
@@ -84,7 +84,7 @@ async function handleImageUpload(event) {
         });
         
     } catch (error) {
-        alert('文件讀取失敗，請重試');
+        alert('File reading failed. Please try again.');
         console.error('File reading error:', error);
     }
 }
