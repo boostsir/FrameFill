@@ -1,5 +1,6 @@
 # Dependencies
 node_modules/
+package-lock.json
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
@@ -22,6 +23,7 @@ dist/
 # IDE and Editor files
 .vscode/
 .idea/
+.claude/
 *.swp
 *.swo
 *~
